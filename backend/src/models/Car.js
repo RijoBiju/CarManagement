@@ -1,4 +1,3 @@
-// models/Car.js
 const mongoose = require("mongoose");
 
 const carSchema = new mongoose.Schema({
@@ -15,17 +14,24 @@ const carSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  car_plate: {
+    type: String,
+    required: true,
+  },
+  year_of_manufacture: {
+    type: Number,
+  },
+  mileage: {
+    type: Number,
+  },
   minimum_selling_price: {
     type: Number,
-    required: true,
   },
   customer_delivery_fee: {
     type: Number,
-    required: true,
   },
   present_market_value: {
     type: Number,
-    required: true,
   },
   archived: {
     type: Boolean,
