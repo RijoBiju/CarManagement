@@ -1,16 +1,19 @@
 const mongoose = require("mongoose");
 
-const expenseType = new mongoose.Schema({
+const expenseTypeSchema = new mongoose.Schema({
   type_id: {
     type: Number,
     required: true,
     unique: true,
   },
   expense_type: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Expenditure",
+    type: String,
+    required: true,
+  },
+  color_code: {
+    type: String,
     required: true,
   },
 });
 
-module.exports = mongoose.model("ExpenseType", expenseType);
+module.exports = mongoose.model("ExpenseType", expenseTypeSchema);
