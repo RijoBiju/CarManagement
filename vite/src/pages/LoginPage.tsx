@@ -16,31 +16,45 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center h-screen bg-login bg-no-repeat bg-center bg-cover">
       <Card className="w-[350px]">
-        <CardHeader>
-          <CardTitle>Login to dashboard</CardTitle>
-          <CardDescription>Access the admin dashboard.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form>
+        <form>
+          <CardHeader>
+            <CardTitle>Login to dashboard</CardTitle>
+            <CardDescription>Access the admin dashboard.</CardDescription>
+          </CardHeader>
+          <CardContent>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">Username</Label>
-                <Input id="name" placeholder="Your username" />
+                <Label>
+                  Username:
+                  <Input
+                    className="mt-2"
+                    placeholder="Your username"
+                    autoComplete="username"
+                  />
+                </Label>
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="framework">Password</Label>
-                <Input id="name" placeholder="Your password" type="password" />
+                <Label>
+                  Password:
+                  <Input
+                    className="mt-2"
+                    placeholder="Your password"
+                    type="password"
+                    autoComplete="current-password"
+                  />
+                </Label>
               </div>
             </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline">Go to user page</Button>
-          <Link to="/dashboard">
-            {" "}
-            <Button>Login</Button>
-          </Link>
-        </CardFooter>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button type="button" variant="outline">
+              Go to user page
+            </Button>
+            <Link to="/dashboard">
+              <Button type="submit">Login</Button>
+            </Link>
+          </CardFooter>
+        </form>
       </Card>
     </div>
   );

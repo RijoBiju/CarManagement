@@ -1,3 +1,5 @@
+// TODO: The add car dialog form should probably be in its own component
+
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import {
@@ -75,7 +77,17 @@ export default function DashboardSidebar() {
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
-                  Car Name
+                  Car Brand
+                </Label>
+                <Input
+                  id="name"
+                  defaultValue="Pedro Duarte"
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Car Model
                 </Label>
                 <Input
                   id="name"
@@ -85,7 +97,7 @@ export default function DashboardSidebar() {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
-                  Car Plate
+                  Plate Number
                 </Label>
                 <Input
                   id="username"
