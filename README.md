@@ -7,7 +7,7 @@ This is the backend application for managing car data, expenses, and expense typ
 ## Clone the Repository
 ```bash
 git clone <repository-url>
-cd car-management-backend
+cd carmanagement/backend
 ```
 
 ## Install Dependencies
