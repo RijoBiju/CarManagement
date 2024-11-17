@@ -1,20 +1,27 @@
-Setup Instructions
-1. Clone the Repository
-   
+# **Car Management Backend**
+
+This is the backend application for managing car data, expenses, and expense types. It provides a set of RESTful APIs for creating, updating, and retrieving information about cars and their associated records.
+
+# Setup Instructions
+
+## Clone the Repository
+```bash
 git clone <repository-url>
 cd car-management-backend
+```
 
-2. Install Dependencies
-Run the following command to install the required packages:
-
+## Install Dependencies
+```bash
 npm install
+```
 
-3. Set Up Environment Variables
-Create a .env file in the root directory and add the following variables:
-
-MONGO_URI=<your-mongodb-uri>
+## Set Up Environment Variables
+```bash
+MONGO_URI=<your-mongo-uri>
 PORT=3000
+```
 
-4. Start the Server
-
+## Start the Server
+```bash
 node app.js
+```
