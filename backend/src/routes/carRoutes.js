@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const carController = require("../controllers/carController");
+const carController = require("../controller/carController");
 
 router.post("/cars", carController.addCar);
 router.patch("/cars/:carId/basic", carController.updateBasicDetails);
