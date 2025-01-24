@@ -19,10 +19,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { Archive, Info, Trash } from "lucide-react";
+import { Archive, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
 import { Link } from "react-router-dom";
 
 const cars = [
@@ -127,7 +126,6 @@ export default function CarsPage() {
           ))}
         </TableBody>
       </Table>
-      <Toaster />
     </div>
   );
 }

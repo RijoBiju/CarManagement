@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { useToast } from "@/components/ui/use-toast";
+
 const basicFormSchema = z.object({
   brand: z.string().min(1),
   model: z.string().min(1),
@@ -25,6 +27,7 @@ const basicFormSchema = z.object({
 });
 
 export default function BasicForm() {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof basicFormSchema>>({
     resolver: zodResolver(basicFormSchema),
     defaultValues: {
@@ -38,10 +41,14 @@ export default function BasicForm() {
 
   function onSubmit(data: z.infer<typeof basicFormSchema>) {
     console.log(data);
+
+    toast({
+      title: "Saved successfully",
+    });
   }
 
   return (
-    <div>
+    <div className="mt-12">
       <h3 className="text-xl font-semibold mb-6">Basic Details</h3>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

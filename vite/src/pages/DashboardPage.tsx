@@ -1,4 +1,5 @@
 import DashboardSidebar from "@/components/DashboardSidebar/DashboardSidebar";
+import { Toaster } from "@/components/ui/toaster";
 import { Outlet } from "react-router-dom";
 
 export default function DashboardPage() {
@@ -6,6 +7,7 @@ export default function DashboardPage() {
     <div className="flex">
       <DashboardSidebar />
       <Outlet />
+      <Toaster />
     </div>
   );
 }
