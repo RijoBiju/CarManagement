@@ -24,28 +24,23 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
 
-const cars = [
-  { id: 1, make: "Toyota", model: "Camry", year: 2021, completeInfo: true },
-  { id: 2, make: "Honda", model: "Accord", year: 2020, completeInfo: true },
-  { id: 3, make: "Tesla", model: "Model S", year: 2023, completeInfo: false },
-];
-
 export default function CarsPage() {
   const { toast } = useToast();
-  // const [cars, setCars] = useState([]);
+  const [cars, setCars] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchCars = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:3000/cars");
-  //       setCars(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching cars:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/cars");
+        const resJson = await response.json();
+        setCars(resJson);
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+      }
+    };
 
-  //   fetchCars();
-  // }, []);
+    fetchCars();
+  }, []);
 
   const handleArchiveClick = () => {
     // send request to backend
@@ -70,7 +65,6 @@ export default function CarsPage() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">CarId</TableHead>
             <TableHead>Make</TableHead>
             <TableHead>Model</TableHead>
             <TableHead className="text-right">Price</TableHead>
@@ -78,23 +72,19 @@ export default function CarsPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {cars.map((car) => (
-            <TableRow key={car.id}>
-              <Link to={`/dashboard/cars/${car.id}`}>
-                <TableCell className="font-medium">
-                  {car.id}
-                  {!car.completeInfo && <Badge>Incomplete Information</Badge>}
-                </TableCell>
-                <TableCell className="font-medium">{car.make}</TableCell>
-                <TableCell>{car.model}</TableCell>
-                <TableCell>{car.year}</TableCell>
-                <TableCell className="text-right">
+          {cars?.map((car) => (
+            <TableRow key={car.carId}>
+              <Link to={`/dashboard/cars/${car.carId}`}>
+                <TableCell className="font-medium">{car.carBrand}</TableCell>
+                <TableCell>{car.carModel}</TableCell>
+                <TableCell>{car.carPlate}</TableCell>
+                {/* <TableCell className="text-right">
                   <Button variant="default" onClick={handleArchiveClick}>
                     <Archive size="16" />
                     Archive
-                  </Button>
+                  </Button> */}
 
-                  <AlertDialog>
+                {/* <AlertDialog>
                     <AlertDialogTrigger>
                       <Button variant="destructive">
                         <Trash size="16" />
@@ -119,8 +109,8 @@ export default function CarsPage() {
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
-                  </AlertDialog>
-                </TableCell>
+                  </AlertDialog> */}
+                {/* </TableCell> */}
               </Link>
             </TableRow>
           ))}

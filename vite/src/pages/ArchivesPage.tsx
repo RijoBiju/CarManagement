@@ -11,9 +11,9 @@ import {
 import { Archive } from "lucide-react";
 
 const cars = [
-  { id: 1, make: "Toyota", model: "Camry", year: 2021, completeInfo: true },
-  { id: 2, make: "Honda", model: "Accord", year: 2020, completeInfo: true },
-  { id: 3, make: "Tesla", model: "Model S", year: 2023, completeInfo: false },
+  // { id: 1, make: "Toyota", model: "Camry", year: 2021, completeInfo: true },
+  // { id: 2, make: "Honda", model: "Accord", year: 2020, completeInfo: true },
+  // { id: 3, make: "Tesla", model: "Model S", year: 2023, completeInfo: false },
 ];
 
 export default function ArchivesPage() {

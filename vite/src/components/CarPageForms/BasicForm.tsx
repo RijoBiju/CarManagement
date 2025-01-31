@@ -14,38 +14,103 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useToast } from "@/components/ui/use-toast";
+import { toast, useToast } from "@/components/ui/use-toast";
+
+import { useEffect } from "react";
 
 const basicFormSchema = z.object({
   brand: z.string().min(1),
   model: z.string().min(1),
-  year: z.coerce.number().min(1600),
+  yearOfManufacture: z.coerce.number().min(1600),
   plate: z.string().length(7),
-  miles: z.coerce.number().min(0, {
+  mileage: z.coerce.number().min(0, {
     message: "Miles should be zero or more",
   }),
 });
 
-export default function BasicForm() {
+interface BasicFormProps {
+  defaultValues: {
+    carId?: number;
+    carBrand: string;
+    carModel: string;
+    carPlate: string;
+    yearOfManufacture?: number;
+    mileage?: number;
+  };
+}
+
+export default function BasicForm({ defaultValues }: BasicFormProps) {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof basicFormSchema>>({
     resolver: zodResolver(basicFormSchema),
     defaultValues: {
-      brand: "",
-      model: "",
-      year: 0,
-      plate: "",
-      miles: 0,
+      brand: defaultValues.carBrand || "",
+      model: defaultValues.carModel || "",
+      yearOfManufacture: defaultValues.yearOfManufacture || 0,
+      plate: defaultValues.carPlate || "",
+      mileage: defaultValues.mileage || 0,
     },
   });
 
-  function onSubmit(data: z.infer<typeof basicFormSchema>) {
-    console.log(data);
+  async function onSubmit(data: z.infer<typeof basicFormSchema>) {
+    const payload = {
+      carBrand: data.brand,
+      carModel: data.model,
+      carPlate: data.plate,
+      yearOfManufacture: data.yearOfManufacture,
+      mileage: data.mileage,
+    };
 
-    toast({
-      title: "Saved successfully",
-    });
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/cars/${defaultValues.carId}/basic`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Updated car data:", result);
+
+        toast({
+          title: "Saved successfully",
+          description: "The car details have been updated.",
+        });
+      } else {
+        const errorData = await response.json();
+        toast({
+          title: "Failed to save",
+          description: errorData.Error || "An error occurred.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating car details:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive",
+      });
+    }
   }
+
+  const { reset } = form;
+
+  // Update form values when defaultValues changes
+  useEffect(() => {
+    reset({
+      brand: defaultValues.carBrand || "",
+      model: defaultValues.carModel || "",
+      yearOfManufacture: defaultValues.yearOfManufacture || 0,
+      plate: defaultValues.carPlate || "",
+      mileage: defaultValues.mileage || 0,
+    });
+  }, [defaultValues, reset]);
 
   return (
     <div className="mt-12">
@@ -57,13 +122,12 @@ export default function BasicForm() {
               control={form.control}
               name="brand"
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel className="">Brand</FormLabel>
+                <FormItem>
+                  <FormLabel>Brand</FormLabel>
                   <FormControl>
                     <Input placeholder="Brand of the Vehicle" {...field} />
-                  </FormControl>{" "}
+                  </FormControl>
                   <FormMessage />
-                  <div className="space-y-1 leading-none"></div>
                 </FormItem>
               )}
             />
@@ -71,13 +135,12 @@ export default function BasicForm() {
               control={form.control}
               name="model"
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel className="">Model</FormLabel>
+                <FormItem>
+                  <FormLabel>Model</FormLabel>
                   <FormControl>
                     <Input placeholder="Model of the Vehicle" {...field} />
-                  </FormControl>{" "}
+                  </FormControl>
                   <FormMessage />
-                  <div className="space-y-1 leading-none"></div>
                 </FormItem>
               )}
             />
@@ -85,49 +148,46 @@ export default function BasicForm() {
               control={form.control}
               name="plate"
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel className="">Plate</FormLabel>
+                <FormItem>
+                  <FormLabel>Plate</FormLabel>
                   <FormControl>
                     <Input placeholder="Plate of the Vehicle" {...field} />
                   </FormControl>
                   <FormMessage />
-                  <div className="space-y-1 leading-none"></div>
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="year"
+              name="yearOfManufacture"
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel className="">Year of Manufacture</FormLabel>
+                <FormItem>
+                  <FormLabel>Year of Manufacture</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Year of the Manufacture"
                       type="number"
                       {...field}
                     />
-                  </FormControl>{" "}
+                  </FormControl>
                   <FormMessage />
-                  <div className="space-y-1 leading-none"></div>
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="miles"
+              name="mileage"
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel className="">Mileage</FormLabel>
+                <FormItem>
+                  <FormLabel>Mileage</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Number of miles travelled"
                       {...field}
                       type="number"
                     />
-                  </FormControl>{" "}
+                  </FormControl>
                   <FormMessage />
-                  <div className="space-y-1 leading-none"></div>
                 </FormItem>
               )}
             />

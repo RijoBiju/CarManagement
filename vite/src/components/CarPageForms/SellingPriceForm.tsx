@@ -15,29 +15,88 @@ import { Input } from "@/components/ui/input";
 
 import { useToast } from "@/components/ui/use-toast";
 
+import { useEffect } from "react";
+
 const basicFormSchema = z.object({
   minimumSellingPrice: z.coerce.number(),
   presentMarketValue: z.coerce.number(),
   customerDeliveryFee: z.coerce.number(),
 });
 
-export default function SettingPriceForm() {
+interface SettingPriceFormProps {
+  defaultValues: {
+    minimumSellingPrice: number;
+    presentMarketValue: number;
+    customerDeliveryFee: number;
+  };
+}
+
+export default function SettingPriceForm({
+  defaultValues,
+}: SettingPriceFormProps) {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof basicFormSchema>>({
     resolver: zodResolver(basicFormSchema),
     defaultValues: {
-      minimumSellingPrice: 0,
-      presentMarketValue: 0,
-      customerDeliveryFee: 0,
+      minimumSellingPrice: defaultValues.minimumSellingPrice || 0,
+      presentMarketValue: defaultValues.presentMarketValue || 0,
+      customerDeliveryFee: defaultValues.customerDeliveryFee || 0,
     },
   });
 
-  function onSubmit(data: z.infer<typeof basicFormSchema>) {
-    console.log(data);
+  const { reset } = form;
 
-    toast({
-      title: "Saved successfully",
+  useEffect(() => {
+    reset({
+      minimumSellingPrice: defaultValues.minimumSellingPrice || 0,
+      presentMarketValue: defaultValues.presentMarketValue || 0,
+      customerDeliveryFee: defaultValues.customerDeliveryFee || 0,
     });
+  }, [defaultValues, reset]);
+
+  async function onSubmit(data: z.infer<typeof basicFormSchema>) {
+    const payload = {
+      minimumSellingPrice: data.minimumSellingPrice,
+      presentMarketValue: data.presentMarketValue,
+      customerDeliveryFee: data.customerDeliveryFee,
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/cars/${defaultValues.carId}/selling`,
+        {
+          method: "PATCH", // Use "PUT" or "PATCH" if updating an existing record
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Pricing details saved:", result);
+
+        toast({
+          title: "Saved successfully",
+          description: "The pricing details have been updated.",
+        });
+      } else {
+        const errorData = await response.json();
+        toast({
+          title: "Failed to save",
+          description: errorData.Error || "An error occurred while saving.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error saving pricing details:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
@@ -50,13 +109,12 @@ export default function SettingPriceForm() {
               control={form.control}
               name="minimumSellingPrice"
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel className="">Minimum selling price</FormLabel>
+                <FormItem>
+                  <FormLabel>Minimum Selling Price</FormLabel>
                   <FormControl>
-                    <Input placeholder="Minimum selling price" {...field} />
-                  </FormControl>{" "}
+                    <Input placeholder="Minimum Selling Price" {...field} />
+                  </FormControl>
                   <FormMessage />
-                  <div className="space-y-1 leading-none"></div>
                 </FormItem>
               )}
             />
@@ -64,13 +122,12 @@ export default function SettingPriceForm() {
               control={form.control}
               name="presentMarketValue"
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel className="">Present market value</FormLabel>
+                <FormItem>
+                  <FormLabel>Present Market Value</FormLabel>
                   <FormControl>
-                    <Input placeholder="Present market value" {...field} />
-                  </FormControl>{" "}
+                    <Input placeholder="Present Market Value" {...field} />
+                  </FormControl>
                   <FormMessage />
-                  <div className="space-y-1 leading-none"></div>
                 </FormItem>
               )}
             />
@@ -78,18 +135,16 @@ export default function SettingPriceForm() {
               control={form.control}
               name="customerDeliveryFee"
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel className="">Customer Delivery Fee</FormLabel>
+                <FormItem>
+                  <FormLabel>Customer Delivery Fee</FormLabel>
                   <FormControl>
                     <Input placeholder="Customer Delivery Fee" {...field} />
                   </FormControl>
                   <FormMessage />
-                  <div className="space-y-1 leading-none"></div>
                 </FormItem>
               )}
             />
           </div>
-
           <Button type="submit" className="font-semibold">
             Save
           </Button>

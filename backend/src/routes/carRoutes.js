@@ -5,8 +5,14 @@ const carController = require("../controller/carController");
 router.post("/cars", carController.addCar);
 router.patch("/cars/:carId/basic", carController.updateBasicDetails);
 router.patch("/cars/:carId/selling", carController.updateSellingDetails);
+router.patch(
+  "/cars/:carId/vehicle-details",
+  carController.updateVehicleDetails
+);
+
 router.get("/cars/:carId", carController.getCarById);
 router.get("/cars", carController.getAllCars);
+
 router.patch("/cars/:carId/archive", carController.toggleArchive);
 
 module.exports = router;

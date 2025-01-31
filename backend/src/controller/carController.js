@@ -14,13 +14,11 @@ exports.addCar = async (req, res) => {
     const savedCar = await newCar.save();
     res.status(201).json({ Status: 201, Data: savedCar });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        Status: 500,
-        Error: "Failed to add car.",
-        Details: error.message,
-      });
+    res.status(500).json({
+      Status: 500,
+      Error: "Failed to add car.",
+      Details: error.message,
+    });
   }
 };
 
@@ -46,27 +44,58 @@ exports.updateBasicDetails = async (req, res) => {
 
     res.status(200).json({ Status: 200, Data: updatedCar });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        Status: 500,
-        Error: "Failed to update car.",
-        Details: error.message,
-      });
+    res.status(500).json({
+      Status: 500,
+      Error: "Failed to update car.",
+      Details: error.message,
+    });
   }
 };
 
-exports.updateSellingDetails = async (req, res) => {
+exports.updateVehicleDetails = async (req, res) => {
   const { carId } = req.params;
-  const { msp, customerDeliveryFees, marketValue } = req.body;
+  console.log("Reached vehicle deats");
+  console.log(carId);
+
+  const {
+    lotNumber,
+    vin,
+    titleCode,
+    odometer,
+    primaryDamage,
+    secondaryDamage,
+    estimatedRetailValue,
+    cylinders,
+    color,
+    engineType,
+    transmission,
+    drive,
+    vehicleType,
+    fuel,
+    keys,
+    highlights,
+  } = req.body;
 
   try {
     const updatedCar = await Car.findOneAndUpdate(
       { car_id: carId },
       {
-        minimum_selling_price: msp,
-        customer_delivery_fee: customerDeliveryFees,
-        present_market_value: marketValue,
+        lot_number: lotNumber,
+        vin,
+        title_code: titleCode,
+        odometer,
+        primary_damage: primaryDamage,
+        secondary_damage: secondaryDamage,
+        estimated_retail_value: estimatedRetailValue,
+        cylinders,
+        color,
+        engine_type: engineType,
+        transmission,
+        drive,
+        vehicle_type: vehicleType,
+        fuel,
+        keys,
+        highlights,
       },
       { new: true }
     );
@@ -76,13 +105,40 @@ exports.updateSellingDetails = async (req, res) => {
 
     res.status(200).json({ Status: 200, Data: updatedCar });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        Status: 500,
-        Error: "Failed to update selling details.",
-        Details: error.message,
-      });
+    res.status(500).json({
+      Status: 500,
+      Error: "Failed to update vehicle details.",
+      Details: error.message,
+    });
+  }
+};
+
+exports.updateSellingDetails = async (req, res) => {
+  const { carId } = req.params;
+  const { minimumSellingPrice, customerDeliveryFee, presentMarketValue } =
+    req.body;
+
+  try {
+    const updatedCar = await Car.findOneAndUpdate(
+      { car_id: carId },
+      {
+        minimum_selling_price: minimumSellingPrice,
+        customer_delivery_fee: customerDeliveryFee,
+        present_market_value: presentMarketValue,
+      },
+      { new: true }
+    );
+
+    if (!updatedCar)
+      return res.status(404).json({ Status: 404, Error: "Car not found." });
+
+    res.status(200).json({ Status: 200, Data: updatedCar });
+  } catch (error) {
+    res.status(500).json({
+      Status: 500,
+      Error: "Failed to update selling details.",
+      Details: error.message,
+    });
   }
 };
 
@@ -102,18 +158,32 @@ exports.getCarById = async (req, res) => {
       carPlate: car.car_plate,
       yearOfManufacture: car.year_of_manufacture,
       mileage: car.mileage,
-      MinimumSellingPrice: car.minimum_selling_price,
-      CustomerDeliveryFee: car.customer_delivery_fee,
-      PresentMarketValue: car.present_market_value,
+      minimumSellingPrice: car.minimum_selling_price,
+      customerDeliveryFee: car.customer_delivery_fee,
+      presentMarketValue: car.present_market_value,
+      lotNumber: car.lot_number,
+      vin: car.vin,
+      titleCode: car.title_code,
+      odometer: car.odometer,
+      primaryDamage: car.primary_damage,
+      secondaryDamage: car.secondary_damage,
+      estimatedRetailValue: car.estimated_retail_value,
+      cylinders: car.cylinders,
+      color: car.color,
+      engineType: car.engine_type,
+      transmission: car.transmission,
+      drive: car.drive,
+      vehicleType: car.vehicle_type,
+      fuel: car.fuel,
+      keys: car.keys,
+      highlights: car.highlights,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        Status: 500,
-        Error: "Failed to retrieve car details.",
-        Details: error.message,
-      });
+    res.status(500).json({
+      Status: 500,
+      Error: "Failed to retrieve car details.",
+      Details: error.message,
+    });
   }
 };
 
@@ -128,18 +198,16 @@ exports.getAllCars = async (req, res) => {
       carPlate: car.car_plate,
       yearOfManufacture: car.year_of_manufacture,
       mileage: car.mileage,
-      MinimumSellingPrice: car.minimum_selling_price,
+      minimumSellingPrice: car.minimum_selling_price,
     }));
 
     res.status(200).json(formattedCars);
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        Status: 500,
-        Error: "Failed to retrieve cars.",
-        Details: error.message,
-      });
+    res.status(500).json({
+      Status: 500,
+      Error: "Failed to retrieve cars.",
+      Details: error.message,
+    });
   }
 };
 
@@ -159,12 +227,10 @@ exports.toggleArchive = async (req, res) => {
 
     res.status(200).json({ Status: 200, Data: updatedCar });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        Status: 500,
-        Error: "Failed to update archive status.",
-        Details: error.message,
-      });
+    res.status(500).json({
+      Status: 500,
+      Error: "Failed to update archive status.",
+      Details: error.message,
+    });
   }
 };

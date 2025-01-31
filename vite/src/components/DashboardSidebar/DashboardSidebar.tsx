@@ -30,13 +30,35 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
+import { useState } from "react";
 
 export default function DashboardSidebar() {
   const navigate = useNavigate();
 
-  const handleAddCarClick = () => {
-    const newCarId = "123"; // Replace with the actual new car ID from the backend response
-    navigate(`/dashboard/cars/${newCarId}`);
+  const [carBrand, setCarBrand] = useState("");
+  const [carModel, setCarModel] = useState("");
+  const [carPlate, setCarPlate] = useState("");
+
+  const handleAddCarClick = async () => {
+    const response = await fetch("http://localhost:3000/api/cars", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        carBrand,
+        carModel,
+        carPlate,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const newCarId = data.Data.car_id;
+      navigate(`/dashboard/cars/${newCarId}`);
+    } else {
+      console.error("Failed to add car");
+    }
   };
 
   return (
@@ -66,6 +88,7 @@ export default function DashboardSidebar() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>Add new car</DialogTitle>
@@ -81,8 +104,9 @@ export default function DashboardSidebar() {
                 </Label>
                 <Input
                   id="name"
-                  defaultValue="Pedro Duarte"
                   className="col-span-3"
+                  value={carBrand}
+                  onChange={(e) => setCarBrand(e.target.value)}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -91,8 +115,9 @@ export default function DashboardSidebar() {
                 </Label>
                 <Input
                   id="name"
-                  defaultValue="Pedro Duarte"
                   className="col-span-3"
+                  value={carModel}
+                  onChange={(e) => setCarModel(e.target.value)}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -101,8 +126,9 @@ export default function DashboardSidebar() {
                 </Label>
                 <Input
                   id="username"
-                  defaultValue="@peduarte"
                   className="col-span-3"
+                  value={carPlate}
+                  onChange={(e) => setCarPlate(e.target.value)}
                 />
               </div>
             </div>

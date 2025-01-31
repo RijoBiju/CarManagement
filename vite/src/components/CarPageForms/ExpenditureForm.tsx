@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -33,31 +35,53 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const expenses = [
-  {
-    expenseId: 1,
-    expenseName: "Oil Change",
-    expenseType: "Mechanic",
-    expenseAmount: 50,
-    dateOfExpense: "2021-09-01",
-  },
-  {
-    expenseId: 2,
-    expenseName: "Car Wash",
-    expenseType: "Miscellaneous",
-    expenseAmount: 20,
-    dateOfExpense: "2021-09-01",
-  },
-  {
-    expenseId: 3,
-    expenseName: "New Tires",
-    expenseType: "Item",
-    expenseAmount: 400,
-    dateOfExpense: "2021-09-01",
-  },
-];
+export default function ExpenditureForm({ carId }: { carId: string }) {
+  const [expenses, setExpenses] = useState([]);
+  const [newExpense, setNewExpense] = useState({
+    name: "",
+    type: "",
+    date: new Date().toISOString().split("T")[0],
+    amount: 0,
+  });
 
-export default function ExpenditureForm() {
+  // Fetch expenses when the component mounts
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/expense/${carId}`
+        );
+        const data = await response.json();
+        setExpenses(data.data || []);
+      } catch (error) {
+        console.error("Failed to fetch expenses:", error);
+      }
+    };
+
+    fetchExpenses();
+  }, [carId]);
+
+  const handleAddExpense = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/expense", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...newExpense, carId }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setExpenses((prev) => [...prev, data.data]);
+      } else {
+        console.error("Failed to create expense");
+      }
+    } catch (error) {
+      console.error("Error creating expense:", error);
+    }
+  };
+
   return (
     <div className="mt-12">
       <div className="flex items-center mb-8">
@@ -80,46 +104,49 @@ export default function ExpenditureForm() {
                 </Label>
                 <Input
                   id="name"
-                  defaultValue="Pedro Duarte"
+                  value={newExpense.name}
+                  onChange={(e) =>
+                    setNewExpense((prev) => ({ ...prev, name: e.target.value }))
+                  }
+                  placeholder="Expense name"
                   className="col-span-3"
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
+                <Label htmlFor="type" className="text-right">
                   Type
                 </Label>
-                <Select>
+                <Select
+                  onValueChange={(value) =>
+                    setNewExpense((prev) => ({ ...prev, type: value }))
+                  }
+                >
                   <SelectTrigger className="col-span-3">
                     <SelectValue placeholder="Select an expense type" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Expense Types</SelectLabel>
-                      <SelectItem value="mechanic" className="text-blue-500">
-                        Mechanic
-                      </SelectItem>
-                      <SelectItem value="initial" className="text-red-500">
-                        Initial
-                      </SelectItem>
-                      <SelectItem value="misc" className="text-green-500">
-                        Miscellaneous
-                      </SelectItem>
-                      <SelectItem value="item" className="text-orange-500">
-                        Item
-                      </SelectItem>
+                      <SelectItem value="mechanic">Mechanic</SelectItem>
+                      <SelectItem value="initial">Initial</SelectItem>
+                      <SelectItem value="misc">Miscellaneous</SelectItem>
+                      <SelectItem value="item">Item</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="amount" className="text-right">
+                <Label htmlFor="date" className="text-right">
                   Date
                 </Label>
                 <Input
-                  id="amount"
-                  defaultValue={new Date().toISOString().split("T")[0]}
-                  className="col-span-3"
+                  id="date"
+                  value={newExpense.date}
+                  onChange={(e) =>
+                    setNewExpense((prev) => ({ ...prev, date: e.target.value }))
+                  }
                   type="date"
+                  className="col-span-3"
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -128,48 +155,60 @@ export default function ExpenditureForm() {
                 </Label>
                 <Input
                   id="amount"
-                  defaultValue="@peduarte"
-                  className="col-span-3"
+                  value={newExpense.amount}
+                  onChange={(e) =>
+                    setNewExpense((prev) => ({
+                      ...prev,
+                      amount: Number(e.target.value),
+                    }))
+                  }
                   type="number"
+                  placeholder="Expense amount"
+                  className="col-span-3"
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Add expense</Button>
+              <Button
+                type="button"
+                onClick={handleAddExpense}
+                className="font-semibold"
+              >
+                Add Expense
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
 
+      {/* Expenses Table */}
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead className="">Expense Name</TableHead>
             <TableHead>Expense Type</TableHead>
-            <TableHead>Date of expense</TableHead>
+            <TableHead>Date of Expense</TableHead>
             <TableHead className="text-right">Amount</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {expenses.map((expense) => (
-            <TableRow key={expense.expenseId}>
-              <TableCell className="font-medium">
-                {expense.expenseName}
-              </TableCell>
+            <TableRow key={expense._id}>
+              <TableCell className="font-medium">{expense.name}</TableCell>
               <TableCell>
-                <Badge>{expense.expenseType}</Badge>
+                <Badge>{expense.type}</Badge>
               </TableCell>
-              <TableCell>{expense.dateOfExpense}</TableCell>
-              <TableCell className="text-right">
-                {expense.expenseAmount}
-              </TableCell>
+              <TableCell>{expense.date}</TableCell>
+              <TableCell className="text-right">${expense.amount}</TableCell>
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
             <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
+            <TableCell className="text-right">
+              ${expenses.reduce((sum, expense) => sum + expense.amount, 0)}
+            </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
