@@ -25,6 +25,7 @@ const basicFormSchema = z.object({
 
 interface SettingPriceFormProps {
   defaultValues: {
+    carId: number;
     minimumSellingPrice: number;
     presentMarketValue: number;
     customerDeliveryFee: number;

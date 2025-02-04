@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableHead,
@@ -7,28 +6,21 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Archive, Trash } from "lucide-react";
+
 import { useEffect, useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
 
-import { BASE_URL } from "../api/index.js";
+import { BASE_URL } from "../api/index.ts";
+
+interface Car {
+  carId: string;
+  carBrand: string;
+  carModel: string;
+  carPlate: string;
+}
 
 export default function CarsPage() {
-  const { toast } = useToast();
-  const [cars, setCars] = useState([]);
+  const [cars, setCars] = useState<Car[]>([]);
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -44,22 +36,22 @@ export default function CarsPage() {
     fetchCars();
   }, []);
 
-  const handleArchiveClick = () => {
-    // send request to backend
-    // on success remove the car from the list
-    // show a toast to the user
-  };
+  // const handleArchiveClick = () => {
+  //   // send request to backend
+  //   // on success remove the car from the list
+  //   // show a toast to the user
+  // };
 
-  const handleDeleteClick = () => {
-    // Show user confirmation dialog
-    // on success remove the car from the list
-    // close the dialog
-    // show a toast to the user
-    toast({
-      title: "Deleted {CarId}",
-      description: "Successfully deleted",
-    });
-  };
+  // const handleDeleteClick = () => {
+  //   // Show user confirmation dialog
+  //   // on success remove the car from the list
+  //   // close the dialog
+  //   // show a toast to the user
+  //   toast({
+  //     title: "Deleted {CarId}",
+  //     description: "Successfully deleted",
+  //   });
+  // };
 
   return (
     <div className="py-10 px-16">

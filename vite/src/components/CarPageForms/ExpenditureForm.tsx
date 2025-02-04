@@ -35,8 +35,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Expense {
+  _id: string;
+  name: string;
+  type: string;
+  date: string;
+  amount: number;
+}
+
 export default function ExpenditureForm({ carId }: { carId: string }) {
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [newExpense, setNewExpense] = useState({
     name: "",
     type: "",
@@ -44,7 +52,6 @@ export default function ExpenditureForm({ carId }: { carId: string }) {
     amount: 0,
   });
 
-  // Fetch expenses when the component mounts
   useEffect(() => {
     const fetchExpenses = async () => {
       try {

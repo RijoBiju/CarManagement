@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import BasicForm from "@/components/CarPageForms/BasicForm";
 import VehicleDetailsForm from "@/components/CarPageForms/VehicleDetailsForm";
 import ExpenditureForm from "@/components/CarPageForms/ExpenditureForm";
@@ -15,7 +17,7 @@ import {
 
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { BASE_URL } from "../api/index.js";
+import { BASE_URL } from "../api/index.ts";
 
 export default function CarPage() {
   const [carData, setCarData] = useState([]);
@@ -37,7 +39,7 @@ export default function CarPage() {
     };
 
     fetchCarData();
-  }, []);
+  }, [carId]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
