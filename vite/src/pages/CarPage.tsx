@@ -190,7 +190,7 @@ export default function CarPage() {
                 className="relative group border rounded-lg overflow-hidden"
               >
                 <img
-                  src={image.url}
+                  src={image.imageUrl}
                   alt={`Car ${image.tag} view`}
                   className="h-48 w-full object-cover hover:scale-105 transition-transform"
                   loading="lazy"

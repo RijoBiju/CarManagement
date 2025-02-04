@@ -4,7 +4,7 @@ const imageSchema = new mongoose.Schema(
       type: String, // Changed from Text to String
       required: true,
     },
-    image_link: {
+    file_name: {
       type: String, // Changed from Text to String
       required: true,
     },

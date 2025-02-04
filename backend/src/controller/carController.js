@@ -1,6 +1,12 @@
 const Car = require("../models/Car");
 
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require("@aws-sdk/client-s3");
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -22,7 +28,21 @@ exports.getAllCarImagesLinks = async (req, res) => {
       return res.status(400).json({ error: "Invalid car ID" });
     }
 
-    const car = await Car.findOne({ car_id: carId }).select("images -_id");
+    const car = await Car.findOne({ car_id: carId })
+      .select("images -_id")
+      .lean();
+
+    for (const image of car.images) {
+      const getObjectParams = {
+        Bucket: bucketName,
+        Key: image.fileName,
+      };
+      const command = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      image.imageUrl = url;
+    }
+
+    console.log(car.images);
 
     if (!car) {
       return res.status(404).json({ error: "Car not found" });
@@ -54,11 +74,9 @@ exports.upload = async (req, res) => {
 
     const imageUrl = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${fileName}`;
 
-    console.log(imageUrl);
-    // Update Car document with new image
     const updatedCar = await Car.findOneAndUpdate(
       { car_id: carId }, // Match schema field name
-      { $push: { images: { url: imageUrl, tag } } },
+      { $push: { images: { tag, fileName: fileName } } },
       { new: true, upsert: false } // Don't upsert, just update existing
     );
 

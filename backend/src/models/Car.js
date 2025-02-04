@@ -89,6 +89,7 @@ const carSchema = new mongoose.Schema({
     {
       url: String,
       tag: String,
+      fileName: String,
     },
   ],
 });
