@@ -52,6 +52,7 @@ export default function ExpenditureForm({ carId }: { carId: string }) {
     date: new Date().toISOString().split("T")[0],
     amount: 0,
   });
+  const [open, setOpen] = useState(false); // Dialog open state
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -80,6 +81,13 @@ export default function ExpenditureForm({ carId }: { carId: string }) {
       if (response.ok) {
         const data = await response.json();
         setExpenses((prev) => [...prev, data.data]);
+        setNewExpense({
+          name: "",
+          type: "",
+          date: new Date().toISOString().split("T")[0],
+          amount: 0,
+        });
+        setOpen(false);
       } else {
         console.error("Failed to create expense");
       }
@@ -92,9 +100,11 @@ export default function ExpenditureForm({ carId }: { carId: string }) {
     <div className="mt-12">
       <div className="flex items-center mb-8">
         <h3 className="text-xl font-semibold mr-3">Expenditure</h3>
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline">Add Expense</Button>
+            <Button variant="outline" onClick={() => setOpen(true)}>
+              Add Expense
+            </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>

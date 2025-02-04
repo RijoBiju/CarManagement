@@ -36,6 +36,8 @@ import { BASE_URL } from "@/api";
 export default function DashboardSidebar() {
   const navigate = useNavigate();
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // New state for dialog control
+
   const [carBrand, setCarBrand] = useState("");
   const [carModel, setCarModel] = useState("");
   const [carPlate, setCarPlate] = useState("");
@@ -56,6 +58,7 @@ export default function DashboardSidebar() {
     if (response.ok) {
       const data = await response.json();
       const newCarId = data.Data.car_id;
+      setIsDialogOpen(false);
       navigate(`/dashboard/cars/${newCarId}`);
     } else {
       console.error("Failed to add car");
@@ -74,7 +77,7 @@ export default function DashboardSidebar() {
 
       <h3 className="font-semibold text-lg mb-4 ml-2">
         Dashboard
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
