@@ -31,6 +31,7 @@ import {
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { useState } from "react";
+import { BASE_URL } from "@/api";
 
 export default function DashboardSidebar() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function DashboardSidebar() {
   const [carPlate, setCarPlate] = useState("");
 
   const handleAddCarClick = async () => {
-    const response = await fetch("http://localhost:3000/api/cars", {
+    const response = await fetch(`${BASE_URL}/api/cars`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

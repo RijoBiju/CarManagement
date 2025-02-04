@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
 import { useEffect } from "react";
+import { BASE_URL } from "@/api";
 
 const basicFormSchema = z.object({
   brand: z.string().min(1),
@@ -62,7 +63,7 @@ export default function BasicForm({ defaultValues }: BasicFormProps) {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cars/${defaultValues.carId}/basic`,
+        `${BASE_URL}/api/cars/${defaultValues.carId}/basic`,
         {
           method: "PATCH",
           headers: {

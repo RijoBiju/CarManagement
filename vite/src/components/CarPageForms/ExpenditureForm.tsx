@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BASE_URL } from "@/api";
 
 interface Expense {
   _id: string;
@@ -55,9 +56,7 @@ export default function ExpenditureForm({ carId }: { carId: string }) {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/expense/${carId}`
-        );
+        const response = await fetch(`${BASE_URL}/api/expense/${carId}`);
         const data = await response.json();
         setExpenses(data.data || []);
       } catch (error) {
@@ -70,7 +69,7 @@ export default function ExpenditureForm({ carId }: { carId: string }) {
 
   const handleAddExpense = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/expense", {
+      const response = await fetch(`${BASE_URL}/api/expense`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

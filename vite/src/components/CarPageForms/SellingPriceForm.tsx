@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 
 import { useEffect } from "react";
+import { BASE_URL } from "@/api";
 
 const basicFormSchema = z.object({
   minimumSellingPrice: z.coerce.number(),
@@ -64,7 +65,7 @@ export default function SettingPriceForm({
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cars/${defaultValues.carId}/selling`,
+        `${BASE_URL}/api/cars/${defaultValues.carId}/selling`,
         {
           method: "PATCH", // Use "PUT" or "PATCH" if updating an existing record
           headers: {
