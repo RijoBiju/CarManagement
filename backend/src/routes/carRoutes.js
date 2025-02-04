@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer"); // Import multer
 const carController = require("../controller/carController");
 
+const multer = require("multer"); // Import multer
 const storage = multer.memoryStorage(); // Store file in memory (or use diskStorage for saving to disk)
 const upload = multer({ storage: storage });
 
@@ -19,10 +19,7 @@ router.get("/cars", carController.getAllCars);
 
 router.patch("/cars/:carId/archive", carController.toggleArchive);
 
-router.post(
-  "/cars/:carId/upload",
-  upload.single("image"),
-  carController.upload
-);
+router.post("/cars/:carId/image", upload.single("image"), carController.upload);
+router.get("/car/:carId/image", carController.getAllCarImagesLinks);
 
 module.exports = router;

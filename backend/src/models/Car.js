@@ -85,6 +85,12 @@ const carSchema = new mongoose.Schema({
   highlights: {
     type: String,
   },
+  images: [
+    {
+      url: String,
+      tag: String,
+    },
+  ],
 });
 
 module.exports = mongoose.model("Car", carSchema);

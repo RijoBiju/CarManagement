@@ -1,7 +1,77 @@
 const Car = require("../models/Car");
 
-const AWS = require("aws-sdk");
-const s3 = new AWS.S3();
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+
+const bucketName = process.env.BUCKET_NAME;
+const bucketRegion = process.env.BUCKET_REGION;
+const accessKey = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region: bucketRegion,
+});
+
+exports.getAllCarImagesLinks = async (req, res) => {
+  try {
+    const carId = Number(req.params.carId);
+    if (isNaN(carId)) {
+      return res.status(400).json({ error: "Invalid car ID" });
+    }
+
+    const car = await Car.findOne({ car_id: carId }).select("images -_id");
+
+    if (!car) {
+      return res.status(404).json({ error: "Car not found" });
+    }
+
+    res.json(car.images || []);
+  } catch (error) {
+    console.error("Error fetching images:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+exports.upload = async (req, res) => {
+  try {
+    const { carId } = req.params;
+    const { tag } = req.body;
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+    const fileName = `cars/${carId}/${Date.now()}-${req.file.originalname}`;
+    const uploadParams = {
+      Bucket: bucketName,
+      Key: fileName,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+    };
+    const command = new PutObjectCommand(uploadParams);
+
+    await s3.send(command);
+
+    const imageUrl = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${fileName}`;
+
+    console.log(imageUrl);
+    // Update Car document with new image
+    const updatedCar = await Car.findOneAndUpdate(
+      { car_id: carId }, // Match schema field name
+      { $push: { images: { url: imageUrl, tag } } },
+      { new: true, upsert: false } // Don't upsert, just update existing
+    );
+
+    if (!updatedCar) {
+      return res.status(404).json({ error: "Car not found" });
+    }
+
+    res.json({ message: "Upload successful", imageUrl });
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 exports.addCar = async (req, res) => {
   const { carBrand, carModel, carPlate } = req.body;
@@ -211,37 +281,6 @@ exports.getAllCars = async (req, res) => {
       Error: "Failed to retrieve cars.",
       Details: error.message,
     });
-  }
-};
-
-exports.upload = async (req, res) => {
-  try {
-    const { carId } = req.params;
-    const { tag } = req.body;
-    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-
-    const fileName = `cars/${carId}/${Date.now()}-${req.file.originalname}`;
-    const uploadParams = {
-      Bucket: process.env.S3_BUCKET_NAME,
-      Key: fileName,
-      Body: req.file.buffer,
-      ContentType: req.file.mimetype,
-    };
-
-    await s3.send(new PutObjectCommand(uploadParams));
-
-    const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
-
-    await Car.findOneAndUpdate(
-      { carId },
-      { $push: { images: { url: imageUrl, tag } } },
-      { upsert: true }
-    );
-
-    res.json({ message: "Upload successful", imageUrl });
-  } catch (error) {
-    console.error("Upload error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

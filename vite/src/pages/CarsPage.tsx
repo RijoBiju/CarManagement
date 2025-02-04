@@ -24,6 +24,8 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
 
+import { BASE_URL } from "../api/index.js";
+
 export default function CarsPage() {
   const { toast } = useToast();
   const [cars, setCars] = useState([]);
@@ -31,7 +33,7 @@ export default function CarsPage() {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/cars");
+        const response = await fetch(`${BASE_URL}/api/cars`);
         const resJson = await response.json();
         setCars(resJson);
       } catch (error) {

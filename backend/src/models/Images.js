@@ -1,26 +1,20 @@
-const mongoose = require("mongoose");
+const imageSchema = new mongoose.Schema(
+  {
+    image_type: {
+      type: String, // Changed from Text to String
+      required: true,
+    },
+    image_link: {
+      type: String, // Changed from Text to String
+      required: true,
+    },
+    car_id: {
+      type: Number, // Changed to match car_id type
+      ref: "Car",
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-const Images = new mongoose.Schema({
-  image_id: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
-  image_type: {
-    type: Text,
-    required: true,
-    unique: true,
-  },
-  image_link: {
-    type: Text,
-    required: true,
-    unique: true,
-  },
-  car_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Car",
-    required: true,
-  },
-});
-
-module.exports = mongoose.model("Images", Images);
+module.exports = mongoose.model("Image", imageSchema);
