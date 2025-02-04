@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import {
   Dialog,
@@ -44,7 +45,9 @@ interface Expense {
   amount: number;
 }
 
-export default function ExpenditureForm({ carId }: { carId: string }) {
+export default function ExpenditureForm() {
+  const carId = useParams().carId;
+
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [newExpense, setNewExpense] = useState({
     name: "",
