@@ -15,14 +15,20 @@ import { useParams } from "react-router-dom";
 import { BASE_URL } from "@/api";
 import CarImageView from "../CarImageView";
 
+interface Image {
+  imageUrl: string;
+  tag: string;
+  fileName: string;
+}
+
 export default function CarImageForm() {
   const carId = useParams().carId;
 
-  const [images, setImages] = useState<{ url: string; tag: string }[]>([]);
-  const [imagesLoading, setImagesLoading] = useState(true);
+  const [images, setImages] = useState<Image[]>([]);
+  const [imagesLoading, setImagesLoading] = useState<boolean>(true);
 
   const [image, setImage] = useState<File | null>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [selectedTag, setSelectedTag] = useState("");
@@ -46,7 +52,7 @@ export default function CarImageForm() {
     };
 
     fetchImages();
-  }, []);
+  }, [carId]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
