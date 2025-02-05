@@ -1,19 +1,26 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload } from "lucide-react";
 
+import { Dispatch, SetStateAction } from "react";
+import { SelectedImageTabType } from "./CarPageForms/CarImageForm.tsx";
+
 interface CarImageViewProps {
   images: { imageUrl: string; tag: string; fileName: string }[];
   imagesLoading: boolean;
-  selectedImageType: string;
-  setSelectedImageType: (tag: string) => void;
+  selectedImageTab: SelectedImageTabType;
+  setSelectedImageTab: Dispatch<SetStateAction<SelectedImageTabType>>;
 }
 
 export default function CarImageView({
   images,
   imagesLoading,
-  selectedImageType,
-  setSelectedImageType,
+  selectedImageTab,
+  setSelectedImageTab,
 }: CarImageViewProps) {
+  const handleTabChange = (value: string) => {
+    setSelectedImageTab(value as SelectedImageTabType);
+  };
+
   if (!imagesLoading && images.length === 0)
     return (
       <div className="text-center py-8 text-gray-500 dark:text-gray-400">
@@ -27,8 +34,8 @@ export default function CarImageView({
       <Tabs
         defaultValue="initial"
         className="w-[400px] mb-6"
-        value={selectedImageType}
-        onValueChange={setSelectedImageType}
+        value={selectedImageTab}
+        onValueChange={handleTabChange}
       >
         <TabsList>
           <TabsTrigger value="initial">Initial images</TabsTrigger>
@@ -41,7 +48,7 @@ export default function CarImageView({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {images
-            .filter((image) => image.tag === selectedImageType)
+            .filter((image) => image.tag === selectedImageTab)
             .map((image, index) => (
               <div
                 key={index}
@@ -55,8 +62,8 @@ export default function CarImageView({
                 />
               </div>
             ))}
-          {!images.filter((image) => image.tag === selectedImageType).length &&
-            `No image of the ${selectedImageType} tag uploaded yet`}
+          {!images.filter((image) => image.tag === selectedImageTab).length &&
+            `No image of the ${selectedImageTab} tag uploaded yet`}
         </div>
       )}
     </>

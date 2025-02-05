@@ -59,6 +59,10 @@ exports.upload = async (req, res) => {
   try {
     const { carId } = req.params;
     const { tag } = req.body;
+    if (!tag) {
+      return res.status(400).json({ error: "No tag specified" });
+    }
+
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
     const fileName = `cars/${carId}/${Date.now()}-${req.file.originalname}`;
@@ -72,8 +76,6 @@ exports.upload = async (req, res) => {
 
     await s3.send(command);
 
-    const imageUrl = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${fileName}`;
-
     const updatedCar = await Car.findOneAndUpdate(
       { car_id: carId }, // Match schema field name
       { $push: { images: { tag, fileName: fileName } } },
@@ -84,7 +86,7 @@ exports.upload = async (req, res) => {
       return res.status(404).json({ error: "Car not found" });
     }
 
-    res.json({ message: "Upload successful", imageUrl });
+    res.json({ message: "Upload successful" });
   } catch (error) {
     console.error("Upload error:", error);
     res.status(500).json({ error: "Internal Server Error" });

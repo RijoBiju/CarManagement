@@ -21,6 +21,8 @@ interface Image {
   fileName: string;
 }
 
+export type SelectedImageTabType = "initial" | "final";
+
 export default function CarImageForm() {
   const carId = useParams().carId;
 
@@ -33,7 +35,8 @@ export default function CarImageForm() {
 
   const [selectedTag, setSelectedTag] = useState("");
 
-  const [selectedImageType, setSelectedImageType] = useState("initial");
+  const [selectedImageTab, setSelectedImageTab] =
+    useState<SelectedImageTabType>("initial");
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -76,6 +79,12 @@ export default function CarImageForm() {
         body: formData,
       });
 
+      if (response.status === 400) {
+        const errorData = await response.json();
+        alert(errorData.error);
+        return;
+      }
+
       if (response.ok) {
         alert("Image uploaded successfully!");
         setOpen(false);
@@ -91,7 +100,7 @@ export default function CarImageForm() {
         );
         const imagesData = await imagesResponse.json();
         setImages(imagesData);
-        setSelectedImageType(prevSelected);
+        setSelectedImageTab(prevSelected as SelectedImageTabType);
       } else {
         alert("Failed to upload image.");
       }
@@ -173,8 +182,8 @@ export default function CarImageForm() {
       <CarImageView
         images={images}
         imagesLoading={imagesLoading}
-        selectedImageType={selectedImageType}
-        setSelectedImageType={setSelectedImageType}
+        selectedImageTab={selectedImageTab}
+        setSelectedImageTab={setSelectedImageTab}
       />
     </div>
   );
