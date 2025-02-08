@@ -7,6 +7,7 @@ const {
   PutObjectCommand,
   GetObjectCommand,
 } = require("@aws-sdk/client-s3");
+const addCar = require("./CarController/addCar");
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -93,27 +94,7 @@ exports.upload = async (req, res) => {
   }
 };
 
-exports.addCar = async (req, res) => {
-  const { carBrand, carModel, carPlate } = req.body;
-
-  try {
-    const newCar = new Car({
-      car_id: Date.now(),
-      brand: carBrand,
-      model: carModel,
-      car_plate: carPlate,
-    });
-
-    const savedCar = await newCar.save();
-    res.status(201).json({ Status: 201, Data: savedCar });
-  } catch (error) {
-    res.status(500).json({
-      Status: 500,
-      Error: "Failed to add car.",
-      Details: error.message,
-    });
-  }
-};
+exports.addCar = addCar;
 
 exports.updateBasicDetails = async (req, res) => {
   const { carId } = req.params;

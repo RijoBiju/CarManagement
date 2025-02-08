@@ -2,11 +2,19 @@ const express = require("express");
 const router = express.Router();
 const carController = require("../controller/carController");
 
-const multer = require("multer"); // Import multer
-const storage = multer.memoryStorage(); // Store file in memory (or use diskStorage for saving to disk)
+const { body } = require("express-validator");
+
+const multer = require("multer");
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-router.post("/cars", carController.addCar);
+router.post(
+  "/cars",
+  body("carBrand").isLength({ min: 1, max: 50 }),
+  body("carPlate").isLength({ min: 1, max: 15 }),
+  body("carModel").isLength({ min: 1, max: 50 }),
+  carController.addCar
+);
 router.patch("/cars/:carId/basic", carController.updateBasicDetails);
 router.patch("/cars/:carId/selling", carController.updateSellingDetails);
 router.patch(
