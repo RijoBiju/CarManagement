@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 
 const carRoutes = require("./routes/carRoutes");
 const expenseTypeRoutes = require("./routes/expenseTypeRoutes");
@@ -17,6 +18,15 @@ console.log(
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 60 seconds
+  limit: 60,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
+
+app.use(limiter);
 
 app.use("/api", carRoutes);
 app.use("/api", expenseTypeRoutes);
