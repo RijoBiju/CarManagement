@@ -7,6 +7,7 @@ const rateLimit = require("express-rate-limit");
 const carRoutes = require("./routes/carRoutes");
 const expenseTypeRoutes = require("./routes/expenseTypeRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const errorHandler = require("./middleware/errorHandler");
 
@@ -31,6 +32,7 @@ app.use(limiter);
 app.use("/api", carRoutes);
 app.use("/api", expenseTypeRoutes);
 app.use("/api", expenseRoutes);
+app.use("/api", dashboardRoutes);
 
 app.use(errorHandler);
 

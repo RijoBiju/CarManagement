@@ -10,8 +10,8 @@ import CarPage from "./pages/CarPage.tsx";
 import CarsPage from "./pages/CarsPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import ExpensesPage from "./pages/ExpensesPage.tsx";
-// import ArchivesPage from "./pages/ArchivesPage.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
+import DashboardPageLayout from "./pages/DashboardPageLayout.tsx";
 
 const router = createBrowserRouter([
   {
@@ -20,8 +20,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardPage />,
+    element: <DashboardPageLayout />,
     children: [
+      {
+        index: true,
+        element: <DashboardPage />,
+      },
       {
         path: "cars",
         element: <CarsPage />,
@@ -34,10 +38,6 @@ const router = createBrowserRouter([
         path: "expenses",
         element: <ExpensesPage />,
       },
-      // {
-      //   path: "archives",
-      //   element: <ArchivesPage />,
-      // },
       {
         path: "settings",
         element: <SettingsPage />,

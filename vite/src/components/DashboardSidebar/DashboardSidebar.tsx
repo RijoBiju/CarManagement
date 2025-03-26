@@ -5,6 +5,7 @@ import { Badge } from "../ui/badge";
 import {
   Archive,
   Car,
+  LayoutDashboard,
   LogOut,
   Plus,
   Settings,
@@ -76,7 +77,7 @@ export default function DashboardSidebar() {
       </div>
 
       <h3 className="font-semibold text-lg mb-4 ml-2">
-        Dashboard
+        Add a car
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <TooltipProvider>
             <Tooltip>
@@ -145,7 +146,16 @@ export default function DashboardSidebar() {
         </Dialog>
       </h3>
 
-      <div className="flex flex-col gap-1 mb-8">
+      <div className="flex flex-col gap-1 mb-8 mt-8">
+        <Link to="/dashboard">
+          <Button variant="ghost" className="px-4 w-[240px] justify-between ">
+            <div className="flex items-center">
+              <LayoutDashboard className="mr-3" size="16" />
+              <p className=" font-semibold ">Dashboard</p>
+            </div>
+          </Button>
+        </Link>
+
         <Link to="/dashboard/cars">
           <Button variant="ghost" className="px-4 w-[240px] justify-between ">
             <div className="flex items-center">

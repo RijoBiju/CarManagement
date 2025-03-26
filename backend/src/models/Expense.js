@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const expenseSchema = new mongoose.Schema({
   carId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Car",
     required: true,
   },
   name: {
