@@ -22,6 +22,7 @@ interface Image {
 }
 
 export type SelectedImageTabType = "initial" | "final";
+export type SelectedTagType = "initial" | "final";
 
 export default function CarImageForm() {
   const carId = useParams().carId;
@@ -33,7 +34,7 @@ export default function CarImageForm() {
   const [open, setOpen] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [selectedTag, setSelectedTag] = useState("");
+  const [selectedTag, setSelectedTag] = useState<SelectedTagType>("initial");
 
   const [selectedImageTab, setSelectedImageTab] =
     useState<SelectedImageTabType>("initial");

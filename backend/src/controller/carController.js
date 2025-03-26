@@ -110,7 +110,7 @@ exports.updateBasicDetails = async (req, res) => {
         year_of_manufacture: yearOfManufacture,
         mileage,
       },
-      { new: true }
+      { new: true } 
     );
 
     if (!updatedCar)
