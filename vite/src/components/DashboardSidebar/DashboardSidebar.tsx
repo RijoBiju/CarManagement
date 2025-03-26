@@ -66,7 +66,7 @@ export default function DashboardSidebar() {
   };
 
   return (
-    <div className="border-r h-screen p-4 py-8">
+    <div className="border-r h-screen p-4 py-8 sticky top-0">
       <div className="flex items-center mb-10">
         <Avatar className="mr-5">
           <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
