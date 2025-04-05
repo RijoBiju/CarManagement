@@ -4,6 +4,7 @@ import BasicForm from "@/components/CarPageForms/BasicForm";
 import VehicleDetailsForm from "@/components/CarPageForms/VehicleDetailsForm";
 import ExpenditureForm from "@/components/CarPageForms/ExpenditureForm";
 import SellingPriceForm from "@/components/CarPageForms/SellingPriceForm";
+import ProfitCalculator from "@/components/ProfitCalculator/ProfitCalculator.tsx";
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -33,7 +34,6 @@ export default function CarPage() {
   return (
     <div className="py-10 px-16">
       <h1 className="text-3xl font-bold mb-10">
-        <span className="text-slate-500 mr-5">{carId}</span>
         {carData.carBrand}
         <span className="text-sm ml-4">{carData.carModel}</span>
       </h1>
@@ -43,6 +43,8 @@ export default function CarPage() {
       <VehicleDetailsForm defaultValues={carData} />
       <ExpenditureForm />
       <SellingPriceForm defaultValues={carData} />
+
+      <ProfitCalculator totalExpenditure={3000} sellingPrice={5000} />
     </div>
   );
 }
