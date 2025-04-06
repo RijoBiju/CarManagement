@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-
 import {
   Card,
   CardContent,
@@ -8,33 +7,60 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { useState } from "react";
 
+import { BASE_URL } from "@/api";
+
 export default function LoginPage() {
   const { toast } = useToast();
-
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState(""); // Changed from username to email
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log("username: ", username);
-    console.log("password: ", password);
+    setIsSubmitting(true);
 
     try {
-      // loggin in
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Error logging in",
-        description: "Check your credentials and try again.",
+      const response = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+        credentials: "include",
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed");
+      }
+
+      // Login successful
+      toast({
+        title: "Login successful",
+        description: "Redirecting to dashboard...",
+      });
+
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.error("Login error:", error);
+      toast({
+        title: "Login failed",
+        description:
+          error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -43,41 +69,55 @@ export default function LoginPage() {
       <Card className="w-[350px]">
         <form onSubmit={handleSubmit}>
           <CardHeader>
-            <CardTitle>Login to dashboard</CardTitle>
-            <CardDescription>Access the admin dashboard.</CardDescription>
+            <CardTitle>Admin Login</CardTitle>
+            <CardDescription>
+              Access the administration dashboard
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label>
-                  Username:
+                <Label htmlFor="email">
+                  Email:
                   <Input
-                    onChange={(e) => setUsername(e.target.value)}
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="mt-2"
-                    placeholder="Your username"
-                    autoComplete="username"
+                    placeholder="admin@example.com"
+                    autoComplete="email"
+                    required
                   />
                 </Label>
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label>
+                <Label htmlFor="password">
                   Password:
                   <Input
+                    id="password"
+                    type="password"
+                    value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="mt-2"
-                    placeholder="Your password"
-                    type="password"
+                    placeholder="••••••••"
                     autoComplete="current-password"
+                    required
                   />
                 </Label>
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button type="button" variant="outline">
-              Go to user page
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => (window.location.href = "/")}
+            >
+              Go to public site
             </Button>
-            <Button type="submit">Login</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Logging in..." : "Login"}
+            </Button>
           </CardFooter>
         </form>
       </Card>

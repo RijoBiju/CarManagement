@@ -72,6 +72,7 @@ export default function SettingPriceForm({
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
+          credentials: "include",
         }
       );
 

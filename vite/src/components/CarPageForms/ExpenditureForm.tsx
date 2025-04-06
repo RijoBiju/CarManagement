@@ -60,7 +60,9 @@ export default function ExpenditureForm() {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/api/expense/${carId}`);
+        const response = await fetch(`${BASE_URL}/api/expense/${carId}`, {
+          credentials: "include",
+        });
         const data = await response.json();
         setExpenses(data.data || []);
       } catch (error) {
@@ -79,6 +81,7 @@ export default function ExpenditureForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...newExpense, carId }),
+        credentials: "include",
       });
 
       if (response.ok) {

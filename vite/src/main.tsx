@@ -13,6 +13,9 @@ import ExpensesPage from "./pages/ExpensesPage.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
 import DashboardPageLayout from "./pages/DashboardPageLayout.tsx";
 
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.tsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,23 +27,43 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DashboardPage />,
+        element: (
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "cars",
-        element: <CarsPage />,
+        element: (
+          <ProtectedRoute>
+            <CarsPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "cars/:carId",
-        element: <CarPage />,
+        element: (
+          <ProtectedRoute>
+            <CarPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "expenses",
-        element: <ExpensesPage />,
+        element: (
+          <ProtectedRoute>
+            <ExpensesPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "settings",
-        element: <SettingsPage />,
+        element: (
+          <ProtectedRoute>
+            <SettingsPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -48,7 +71,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );
 

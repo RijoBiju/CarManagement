@@ -20,7 +20,9 @@ export default function CarPage() {
   useEffect(() => {
     const fetchCarData = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/api/cars/${carId}`);
+        const response = await fetch(`${BASE_URL}/api/cars/${carId}`, {
+          credentials: "include",
+        });
         const data = await response.json();
         setCarData(data);
       } catch (error) {

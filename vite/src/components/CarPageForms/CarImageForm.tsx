@@ -43,7 +43,9 @@ export default function CarImageForm() {
     const fetchImages = async () => {
       try {
         setImagesLoading(true);
-        const response = await fetch(`${BASE_URL}/api/car/${carId}/image`);
+        const response = await fetch(`${BASE_URL}/api/car/${carId}/image`, {
+          credentials: "include",
+        });
         if (!response.ok) throw new Error("Failed to fetch images");
 
         const data = await response.json();
@@ -78,6 +80,7 @@ export default function CarImageForm() {
       const response = await fetch(`${BASE_URL}/api/cars/${carId}/image`, {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
 
       if (response.status === 400) {
@@ -97,7 +100,10 @@ export default function CarImageForm() {
         }
 
         const imagesResponse = await fetch(
-          `${BASE_URL}/api/car/${carId}/image`
+          `${BASE_URL}/api/car/${carId}/image`,
+          {
+            credentials: "include",
+          }
         );
         const imagesData = await imagesResponse.json();
         setImages(imagesData);

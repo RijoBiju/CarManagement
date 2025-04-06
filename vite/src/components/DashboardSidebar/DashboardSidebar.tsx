@@ -54,6 +54,7 @@ export default function DashboardSidebar() {
         carModel,
         carPlate,
       }),
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -162,7 +163,6 @@ export default function DashboardSidebar() {
               <Car className="mr-3" size="16" />
               <p className=" font-semibold ">All Cars</p>
             </div>
-            <Badge>16</Badge>
           </Button>
         </Link>
 
@@ -172,7 +172,6 @@ export default function DashboardSidebar() {
               <SquareKanban className="mr-3" size="16" />
               <p className=" font-semibold ">Expense Types</p>
             </div>
-            <Badge>2</Badge>
           </Button>
         </Link>
 
@@ -182,7 +181,6 @@ export default function DashboardSidebar() {
               <Archive className="mr-3" size="16" />
               <p className=" font-semibold ">Archives</p>
             </div>
-            <Badge>4</Badge>
           </Button>
         </Link>
       </div>

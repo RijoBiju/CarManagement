@@ -8,7 +8,9 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/api/dashboard/stats`);
+        const response = await fetch(`${BASE_URL}/api/dashboard/stats`, {
+          credentials: "include",
+        });
         const resJson = await response.json();
         setData(resJson);
       } catch (error) {
